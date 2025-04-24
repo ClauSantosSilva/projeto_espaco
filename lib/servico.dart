@@ -23,7 +23,7 @@ class Servico {
     };
   }
 
-  static String url = "http://localhost:3000";
+  static String url = "http://10.87.104.15:3000";
 
   /// Carrega todos os serviços do servidor
   static Future<List<Servico>> carregarServicos() async {

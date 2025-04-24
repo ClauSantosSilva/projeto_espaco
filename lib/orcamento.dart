@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Orcamento {
-  final String apiUrl = "http://localhost:3000";  // Substitua pelo seu URL da API
+  final String apiUrl = "http://10.87.104.15:3000";  // Substitua pelo seu URL da API
 
   // Função para salvar o orçamento
   Future<void> salvarOrcamento(String nome, String telefone, List<Map<String, dynamic>> servicos, double total, String desconto) async {

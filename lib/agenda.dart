@@ -36,7 +36,7 @@ class Agenda {
     );
   }
 
-  static const String baseUrl = "http://localhost:3000";
+  static const String baseUrl = "http://10.87.104.15:3000";
 
   Future<bool> salvarAgenda() async {
     try {

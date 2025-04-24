@@ -10,9 +10,8 @@ class Usuario {
 
   Usuario(this.nome, this.email, this.senha);
 
-  final String url = "http://localhost:3000/usuario";
+  final String url = "http://10.87.104.15:3000/usuario";
 
-  // Usuário fixo para testes
   static const _usuarioTeste = {
     'id': 999,
     'nome': 'Claudia Teste',
@@ -20,7 +19,6 @@ class Usuario {
     'senha': '123456',
   };
 
-  // Cadastrar usuário no backend
   Future<bool> cadastrarUsuario() async {
     try {
       final response = await http.post(
@@ -30,14 +28,23 @@ class Usuario {
           'nome': nome,
           'email': email,
           'senha': senha,
+          'nome_negocio': '',
+          'cpf_cnpj': '',
+          'telefone': '',
+          'cep': '',
+          'numero': '',
+          'complemento': '',
+          'tipo_acesso': 'usuario'
         }),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         var data = json.decode(response.body);
-        id = data['id'];
+        id = data['insertId'];
         await salvarLocalmente();
         return true;
+      } else {
+        print("Erro no cadastro: ${response.body}");
       }
     } catch (e) {
       print("Erro ao cadastrar: $e");
@@ -45,9 +52,7 @@ class Usuario {
     return false;
   }
 
-  // Login do usuário (primeiro tenta login fixo, depois via backend)
   Future<bool> login() async {
-    // Verifica se é o usuário fixo de teste
     if (email == _usuarioTeste['email'] && senha == _usuarioTeste['senha']) {
       id = _usuarioTeste['id'] as int;
       nome = _usuarioTeste['nome'] as String;
@@ -55,15 +60,11 @@ class Usuario {
       return true;
     }
 
-    // Senão, tenta login no backend
     try {
       final response = await http.post(
         Uri.parse("$url/login"),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'email': email,
-          'senha': senha,
-        }),
+        body: json.encode({'email': email, 'senha': senha}),
       );
 
       if (response.statusCode == 200) {
@@ -72,6 +73,8 @@ class Usuario {
         nome = data['nome'];
         await salvarLocalmente();
         return true;
+      } else {
+        print("Erro login: ${response.body}");
       }
     } catch (e) {
       print("Erro ao fazer login: $e");
@@ -79,7 +82,6 @@ class Usuario {
     return false;
   }
 
-  // Salvar dados localmente
   Future<void> salvarLocalmente() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('usuario_id', id ?? 0);
@@ -88,7 +90,6 @@ class Usuario {
     await prefs.setString('usuario_senha', senha);
   }
 
-  // Carregar usuário salvo
   static Future<Usuario?> carregarUsuarioSalvo() async {
     final prefs = await SharedPreferences.getInstance();
     int? id = prefs.getInt('usuario_id');
@@ -104,7 +105,6 @@ class Usuario {
     return null;
   }
 
-  // Limpar dados (logout)
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('usuario_id');

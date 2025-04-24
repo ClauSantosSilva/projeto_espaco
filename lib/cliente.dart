@@ -7,7 +7,7 @@ class Cliente {
   String? telefone;
   String? cpf;
 
-  final String url = "http://localhost:3000"; // URL do backend (ajustar conforme necessário)
+  final String url = "http://10.87.104.15:3000"; // URL do backend (ajustar conforme necessário)
 
   // Construtor
   Cliente({this.id, this.nome, this.telefone, this.cpf});
